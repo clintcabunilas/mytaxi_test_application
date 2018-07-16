@@ -3,7 +3,9 @@ package com.mytaxi.controller.mapper;
 import com.mytaxi.datatransferobject.DriverDTO;
 import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainvalue.GeoCoordinate;
-import java.util.Collection;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,10 +34,15 @@ public class DriverMapper
     }
 
 
-    public static List<DriverDTO> makeDriverDTOList(Collection<DriverDO> drivers)
+    public static List<DriverDTO> makeDriverDTOList(List<DriverDO> drivers)
     {
         return drivers.stream()
             .map(DriverMapper::makeDriverDTO)
             .collect(Collectors.toList());
+    }
+
+    public static Page<DriverDTO> makeDriverDTOPage(Page<DriverDO> drivers)
+    {
+        return new PageImpl<>(makeDriverDTOList(drivers.getContent()), drivers.getPageable(), drivers.getTotalElements());
     }
 }
