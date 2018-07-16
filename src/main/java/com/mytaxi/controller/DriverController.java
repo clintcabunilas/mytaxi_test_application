@@ -1,26 +1,26 @@
 package com.mytaxi.controller;
 
+import com.mytaxi.controller.mapper.DriverCarMapper;
 import com.mytaxi.controller.mapper.DriverMapper;
+import com.mytaxi.datatransferobject.DriverCarDTO;
 import com.mytaxi.datatransferobject.DriverDTO;
 import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainvalue.OnlineStatus;
+import com.mytaxi.exception.CarAlreadyInUseException;
 import com.mytaxi.exception.ConstraintsViolationException;
 import com.mytaxi.exception.EntityNotFoundException;
+import com.mytaxi.service.driver.CarDriverService;
 import com.mytaxi.service.driver.DriverService;
-import java.util.List;
-import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
 
 /**
  * All operations with a driver will be routed by this controller.
@@ -33,11 +33,14 @@ public class DriverController
 
     private final DriverService driverService;
 
+    private final CarDriverService carDriverService;
+
 
     @Autowired
-    public DriverController(final DriverService driverService)
+    public DriverController(final DriverService driverService, CarDriverService carDriverService)
     {
         this.driverService = driverService;
+        this.carDriverService = carDriverService;
     }
 
 
@@ -78,5 +81,24 @@ public class DriverController
         throws ConstraintsViolationException, EntityNotFoundException
     {
         return DriverMapper.makeDriverDTOList(driverService.find(onlineStatus));
+    }
+
+    @PutMapping("/{driverId}/selected-cars/{carId}")
+    public DriverCarDTO selectCarForDriver(@PathVariable(name = "driverId") Long driverId,
+                                           @PathVariable(name = "carId") Long carId) throws EntityNotFoundException, CarAlreadyInUseException, ConstraintsViolationException {
+        return DriverCarMapper.makeDriverCarDTO(carDriverService.selectCarForDriver(driverId, carId));
+    }
+
+    @PutMapping("/{driverId}/deselected-cars/{carId}")
+    public DriverCarDTO deselectCarForDriver(@PathVariable(name = "driverId") Long driverId,
+                                             @PathVariable(name = "carId") Long carId) throws EntityNotFoundException, CarAlreadyInUseException, ConstraintsViolationException {
+        return DriverCarMapper.makeDriverCarDTO(carDriverService.deselectCarForDriver(driverId, carId));
+    }
+
+    @GetMapping("/driver-or-car-attributes")
+    public Page<DriverDTO> getDrivers(@RequestParam Map<String, Object> allRequestParams,
+                                      @PageableDefault Pageable pageable)
+    {
+        return DriverMapper.makeDriverDTOPage(driverService.getDrivers(allRequestParams, pageable));
     }
 }
