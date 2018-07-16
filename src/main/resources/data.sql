@@ -40,3 +40,26 @@ values
  (8,
  'aced0005737200226f72672e737072696e676672616d65776f726b2e646174612e67656f2e506f696e7431b9e90ef11a4006020002440001784400017978704023000000000000404bfa1cac083127', now(), now(), false, 'ONLINE',
 'driver08pw', 'driver08');
+
+-- Create 4 cars
+
+insert into car (id, date_created, license_plate, convertible, rating, engine_type, manufacturer, deleted) values (1, now(), 'ABC123', false, 5.0, 'gas', 'Manufacturer1', false);
+
+insert into car (id, date_created, license_plate, convertible, rating, engine_type, manufacturer, deleted) values (2, now(), 'DEF456', false, 2.0, 'gas', 'Manufacturer2', false);
+
+insert into car (id, date_created, license_plate, convertible, rating, engine_type, manufacturer, deleted) values (3, now(), 'GHI789', false, 3.5, 'diesel', 'Manufacturer2', false);
+
+insert into car (id, date_created, license_plate, convertible, rating, engine_type, manufacturer, deleted) values (4, now(), 'JKL987', false, 4.0, 'electric', 'Manufacturer3', false);
+
+-- 2 ONLINE drivers select 1 available car each
+
+insert into driver_car (id, date_created, driver_id, car_id, selected) values (1, now(), 4, 1, true);
+
+insert into driver_car (id, date_created, driver_id, car_id, selected) values (2, now(), 8, 2, true);
+
+-- Create 2 deleted car
+
+insert into car (id, date_created, license_plate, convertible, rating, engine_type, manufacturer, deleted) values (5, now(), 'MNO654', false, 4.0, 'electric', 'Manufacturer3',
+true);
+
+insert into car (id, date_created, license_plate, convertible, rating, engine_type, manufacturer, deleted) values (6, now(), 'JKL654', false, 5.0, 'diesel', 'Manufacturer3', true);
