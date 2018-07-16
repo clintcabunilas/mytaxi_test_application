@@ -4,7 +4,11 @@ import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainvalue.OnlineStatus;
 import com.mytaxi.exception.ConstraintsViolationException;
 import com.mytaxi.exception.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
+import java.util.Map;
 
 public interface DriverService
 {
@@ -19,4 +23,5 @@ public interface DriverService
 
     List<DriverDO> find(OnlineStatus onlineStatus);
 
+    Page<DriverDO> getDrivers(Map<String, Object> allRequestParams, Pageable pageable);
 }
